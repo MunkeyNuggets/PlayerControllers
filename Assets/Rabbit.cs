@@ -6,10 +6,18 @@ using UnityEngine;
 
 public class Rabbit : MonoBehaviour {
 
-    public float hop;
-    public float speed;
+    public float flickTime;
+    public float speed = 10;
     //public Stopwatch timer;
-
+    public float lowerThreshold;
+    public float upperThreshold;
+    public float lastMoveZ;
+    public float threshHoldTime;
+    public float timeTaken;
+    public bool moveMode = false;
+    public float jumpDelay = 1.5f;
+    bool flickBegin = false;
+    float time = 0;
     float leftRightTurn;
     float rabbitMoveForward;
     Rigidbody rb;
@@ -48,30 +56,52 @@ public class Rabbit : MonoBehaviour {
 
     void RabbitMove()
     {
-        //was thinking that it could be like a presure point and you build up a meter instead
+        //Gets where the stick is on the z Axis
         float moveZ = Input.GetAxis("Vertical");
-        bool flickBegin = false;
-        if (moveZ >= 0.03f)
+
+        if (!moveMode)
         {
-            flickBegin = true;
-            while (flickBegin == true)
+            //check if the position of the stick is past the lower set threshold
+            if (moveZ >= lowerThreshold)
             {
-                float time = 1;
-                float endTime = 5;
-                if (time < endTime)
+                //
+                if (lastMoveZ < lowerThreshold)
                 {
-                    time += Time.deltaTime;
-                    Debug.Log(time);
+                    flickBegin = true;
+                    threshHoldTime = Time.time;
                 }
+            }
+            else
+            {
                 flickBegin = false;
-                time = 1;
+            }
+            if (flickBegin == true)
+            {
+                if (moveZ >= upperThreshold)
+                {
+                    timeTaken = Time.time - threshHoldTime;
+                    if ((timeTaken) <= flickTime)
+                    {
+                        moveMode = true;
+                        rabbitMoveForward = .5f + jumpDelay;
+                    }
+                    flickBegin = false;
+                }
             }
         }
         else
-            flickBegin = false;
-        Debug.Log(flickBegin);
-
-
+        {
+            rabbitMoveForward -= Time.deltaTime;
+            if (rabbitMoveForward < 0)
+            {
+                moveMode = false;
+            }
+            else if (rabbitMoveForward > jumpDelay)
+            {
+                rb.AddForce(transform.forward * speed);
+            }
+        }
+        lastMoveZ = moveZ;
         /*
           * start:
          * lastholding = false
