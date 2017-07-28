@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class Rabbit : MonoBehaviour {
-
+public class Snake : MonoBehaviour
+{
     public float flickTime;
     public float speed = 10;
     //public Stopwatch timer;
@@ -21,17 +21,13 @@ public class Rabbit : MonoBehaviour {
     float leftRightTurn;
     float rabbitMoveForward;
     Rigidbody rb;
-
-	// Use this for initialization
-	void Start ()
+    
+    void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rabbitMoveForward = 3.0f;
-        //timer = new Stopwatch();
-	}
-	
-	// Update is called once per frame
-	void Update ()
+    }
+    
+    void Update()
     {
         // PlayerInputBasic();
         RabbitMove();
@@ -39,19 +35,10 @@ public class Rabbit : MonoBehaviour {
         //Debug.Log(moveZ);
 
     }
-
-    void PlayerInputBasic()
-    {
-        float moveX = Input.GetAxis("Horizontal") * (speed) * (Time.deltaTime);
-        float moveZ = Input.GetAxis("Vertical") * (speed) * (Time.deltaTime);
-        transform.Translate(0, 0, moveZ);
-        //Debug.Log(moveZ);
-        transform.Translate(moveX, 0, 0);
-    }
-
+    
     void Movement()
     {
-        
+
     }
 
     void RabbitMove()
@@ -98,9 +85,8 @@ public class Rabbit : MonoBehaviour {
         }
         else
         {
-            //
             rabbitMoveForward -= Time.deltaTime;
-            //Will set the moveMode to false when the rabbitMoveForward timer is up.
+            //Will set the moveMode to false when the rabbitMoveForward timer is up
             if (rabbitMoveForward < 0)
             {
                 moveMode = false;
@@ -113,4 +99,14 @@ public class Rabbit : MonoBehaviour {
         //sets the lastMoveZ
         lastMoveZ = moveZ;
     }
+    //This was just used to get a block moving
+    void PlayerInputBasic()
+    {
+        float moveX = Input.GetAxis("Horizontal") * (speed) * (Time.deltaTime);
+        float moveZ = Input.GetAxis("Vertical") * (speed) * (Time.deltaTime);
+        transform.Translate(0, 0, moveZ);
+        //Debug.Log(moveZ);
+        transform.Translate(moveX, 0, 0);
+    }
+
 }
