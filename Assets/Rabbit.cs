@@ -11,7 +11,7 @@ public class Rabbit : MonoBehaviour {
     //public Stopwatch timer;
     public float lowerThreshold;
     public float upperThreshold;
-    public float lastMoveZ;
+    public float lastValueZ;
     public float threshHoldTime;
     public float timeTaken;
     public bool moveMode = false;
@@ -57,15 +57,15 @@ public class Rabbit : MonoBehaviour {
     void RabbitMove()
     {
         //Gets where the stick is on the z Axis
-        float moveZ = Input.GetAxis("Vertical");
+        float valueZ = Input.GetAxis("Vertical");
 
         if (!moveMode)
         {
             //check if the position of the stick is past the lower set threshold
-            if (moveZ >= lowerThreshold)
+            if (valueZ >= lowerThreshold)
             {
                 //This will check if the lastMoveZ is lower than the lowerThreshold. In a flick, this code will only get to run once.
-                if (lastMoveZ < lowerThreshold)
+                if (lastValueZ < lowerThreshold)
                 {
                     flickBegin = true;
                     //the timer the player must beat in order to perform a successful flick starts here.
@@ -80,7 +80,7 @@ public class Rabbit : MonoBehaviour {
             if (flickBegin == true)
             {
                 //checks when the player has moved the stick into the upperThreshold
-                if (moveZ >= upperThreshold)
+                if (valueZ >= upperThreshold)
                 {
                     //shows the time the player took to reach the upperThreshold
                     timeTaken = Time.time - threshHoldTime;
@@ -90,7 +90,7 @@ public class Rabbit : MonoBehaviour {
                         //the rabbits moveMode is activated and passes through the 'if'
                         moveMode = true;
                         //Sets a delay so thatthe player can't spam jump
-                        rabbitMoveForward += jumpDelay;
+                        rabbitMoveForward = 1.5f + jumpDelay;
                     }
                     flickBegin = false;
                 }
@@ -111,6 +111,6 @@ public class Rabbit : MonoBehaviour {
             }
         }
         //sets the lastMoveZ
-        lastMoveZ = moveZ;
+        lastValueZ = valueZ;
     }
 }

@@ -6,22 +6,16 @@ using UnityEngine;
 
 public class Snake : MonoBehaviour
 {
-    public float flickTime;
-    public float speed = 10;
-    //public Stopwatch timer;
-    public float lowerThreshold;
-    public float upperThreshold;
-    public float lastMoveZ;
-    public float threshHoldTime;
-    public float timeTaken;
-    public bool moveMode = false;
-    public float jumpDelay = 1.5f;
-    bool flickBegin = false;
-    float time = 0;
-    float leftRightTurn;
-    float rabbitMoveForward;
+
     Rigidbody rb;
-    
+    float snakeSpeed;
+    float upperRightThreshold = .8f;
+    float upperLeftThreshold = -.8f;
+    float lowerRightThreshold = .1f;
+    float lowerLeftThreshold = -.1f;
+    bool rightCheck = true;
+    bool leftCheck = true;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -29,84 +23,43 @@ public class Snake : MonoBehaviour
     
     void Update()
     {
-        // PlayerInputBasic();
-        RabbitMove();
-        //float moveZ = Input.GetAxis("Vertical");
-        //Debug.Log(moveZ);
-
-    }
-    
-    void Movement()
-    {
-
+        SnakeMove();
     }
 
-    void RabbitMove()
+    void SnakeMove()
     {
-        //Gets where the stick is on the z Axis
-        float moveZ = Input.GetAxis("Vertical");
+        float moveX = Input.GetAxis("Horizontal");
 
-        if (!moveMode)
+        transform.Translate(0, 0, snakeSpeed);
+
+
+        if (moveX >= upperRightThreshold && rightCheck == true)
         {
-            //check if the position of the stick is past the lower set threshold
-            if (moveZ >= lowerThreshold)
-            {
-                //This will check if the lastMoveZ is lower than the lowerThreshold. In a flick, this code will only get to run once.
-                if (lastMoveZ < lowerThreshold)
-                {
-                    flickBegin = true;
-                    //the timer the player must beat in order to perform a successful flick starts here.
-                    threshHoldTime = Time.time;
-                }
-            }
-            else
-            {
-                //will keep doing nothing until true
-                flickBegin = false;
-            }
-            if (flickBegin == true)
-            {
-                //checks when the player has moved the stick into the upperThreshold
-                if (moveZ >= upperThreshold)
-                {
-                    //shows the time the player took to reach the upperThreshold
-                    timeTaken = Time.time - threshHoldTime;
-                    //Checks to see if the player has performed a successful flick
-                    if ((timeTaken) <= flickTime)
-                    {
-                        //the rabbits moveMode is activated and passes through the 'if'
-                        moveMode = true;
-                        //Sets a delay so thatthe player can't spam jump
-                        rabbitMoveForward += jumpDelay;
-                    }
-                    flickBegin = false;
-                }
-            }
+            snakeSpeed += .1f;
+            rightCheck = false;
         }
-        else
+        else if (moveX < upperLeftThreshold && leftCheck == true)
         {
-            rabbitMoveForward -= Time.deltaTime;
-            //Will set the moveMode to false when the rabbitMoveForward timer is up
-            if (rabbitMoveForward < 0)
-            {
-                moveMode = false;
-            }
-            else if (rabbitMoveForward > jumpDelay)
-            {
-                rb.AddForce(transform.forward * speed);
-            }
+            snakeSpeed += .1f;
+            leftCheck = false;
         }
-        //sets the lastMoveZ
-        lastMoveZ = moveZ;
-    }
-    //This was just used to get a block moving
-    void PlayerInputBasic()
-    {
-        float moveX = Input.GetAxis("Horizontal") * (speed) * (Time.deltaTime);
-        float moveZ = Input.GetAxis("Vertical") * (speed) * (Time.deltaTime);
-        transform.Translate(0, 0, moveZ);
-        //Debug.Log(moveZ);
-        transform.Translate(moveX, 0, 0);
-    }
 
+        if (moveX <= lowerRightThreshold && rightCheck == false)
+        {
+            rightCheck = true;
+        }
+        else if (moveX >= lowerLeftThreshold && leftCheck == false)
+        {
+            leftCheck = true;
+        }
+
+        if (snakeSpeed > 0)
+        {
+            snakeSpeed -= Time.deltaTime;
+        }
+        else if (snakeSpeed < 0)
+        {
+            snakeSpeed = 0;
+        }
+    }
 }
