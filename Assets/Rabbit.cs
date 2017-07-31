@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-//using System.Diagnostics;
 using UnityEngine;
 
 
@@ -17,27 +16,40 @@ public class Rabbit : MonoBehaviour {
     public bool moveMode = false;
     public float jumpDelay = 1.5f;
     bool flickBegin = false;
+    public bool grounded = false;
     float time = 0;
     float leftRightTurn;
     float rabbitMoveForward;
+    float gravity = 100.0f;
+    float jumpHeight = 2.0f;
     Rigidbody rb;
+    public LayerMask groundLayer;
+    public Collider playerCollider;
 
 	// Use this for initialization
+    void Awake()
+
+    { 
+        rb = GetComponent<Rigidbody>();
+        rb.useGravity = false;
+    }
+
 	void Start ()
     {
-        rb = GetComponent<Rigidbody>();
+        
         rabbitMoveForward = 3.0f;
+        playerCollider = GetComponent<Collider>();
+
         //timer = new Stopwatch();
 	}
 	
 	// Update is called once per frame
-	void Update ()
+	void FixedUpdate ()
     {
         // PlayerInputBasic();
         RabbitMove();
         //float moveZ = Input.GetAxis("Vertical");
         //Debug.Log(moveZ);
-
     }
 
     void PlayerInputBasic()
@@ -57,7 +69,7 @@ public class Rabbit : MonoBehaviour {
     void RabbitMove()
     {
         //Gets where the stick is on the z Axis
-        float valueZ = Input.GetAxis("Vertical");
+        float valueZ = Input.GetAxis("Vertical2");
 
         if (!moveMode)
         {
@@ -89,28 +101,50 @@ public class Rabbit : MonoBehaviour {
                     {
                         //the rabbits moveMode is activated and passes through the 'if'
                         moveMode = true;
-                        //Sets a delay so thatthe player can't spam jump
-                        rabbitMoveForward = 1.5f + jumpDelay;
+                        Vector3 val = transform.forward * 2;
+                        rb.velocity = new Vector3(val.x, CalculateJumpVerticalSpeed(), val.z);
                     }
                     flickBegin = false;
                 }
             }
         }
-        else
+        if (grounded)
         {
-            //
-            rabbitMoveForward -= Time.deltaTime;
-            //Will set the moveMode to false when the rabbitMoveForward timer is up.
-            if (rabbitMoveForward < 0)
-            {
-                moveMode = false;
-            }
-            else if (rabbitMoveForward > jumpDelay)
-            {
-                rb.AddForce(transform.forward * speed);
-            }
+            moveMode = false;
+            lastValueZ = valueZ;
         }
-        //sets the lastMoveZ
-        lastValueZ = valueZ;
+
+        rb.AddForce(new Vector3(0, -gravity * rb.mass, 0));
     }
+
+    //needs a grouded check
+    //needs to jump
+    float CalculateJumpVerticalSpeed()
+    {
+        // From the jump height and gravity we deduce the upwards speed 
+        // for the character to reach at the apex.
+        return Mathf.Sqrt(2 * jumpHeight * gravity);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (((1 << collision.gameObject.layer) & groundLayer) != 0)
+        {
+            Debug.Log("We are grounded");
+            grounded = true;
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (((1 << collision.gameObject.layer) & groundLayer) != 0)
+        {
+            Debug.Log("We are not grounded");
+            grounded = false;
+        }
+    }
+
+    
+
 }
+
