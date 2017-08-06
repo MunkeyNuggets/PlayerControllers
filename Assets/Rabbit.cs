@@ -5,22 +5,26 @@ using UnityEngine;
 
 public class Rabbit : MonoBehaviour {
 
+    //The time the player gets to flick
     public float flickTime;
-    public float speed = 10;
-    //public Stopwatch timer;
+    //Where the timer starts
     public float lowerThreshold;
+    //Where the timer ends
     public float upperThreshold;
+
     public float lastValueZ;
+    //The time the flick began
     public float threshHoldTime;
+    //The time taken to complete the flick
     public float timeTaken;
     public bool moveMode = false;
+    //A delay variable for the jump
     public float jumpDelay = 1.5f;
     bool flickBegin = false;
     public bool grounded = false;
-    float time = 0;
-    float leftRightTurn;
-    float rabbitMoveForward;
+    //The gravity for the object
     float gravity = 100.0f;
+    //How high the object can jump
     float jumpHeight = 2.0f;
     Rigidbody rb;
     public LayerMask groundLayer;
@@ -36,34 +40,13 @@ public class Rabbit : MonoBehaviour {
 
 	void Start ()
     {
-        
-        rabbitMoveForward = 3.0f;
         playerCollider = GetComponent<Collider>();
-
-        //timer = new Stopwatch();
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate ()
     {
-        // PlayerInputBasic();
         RabbitMove();
-        //float moveZ = Input.GetAxis("Vertical");
-        //Debug.Log(moveZ);
-    }
-
-    void PlayerInputBasic()
-    {
-        float moveX = Input.GetAxis("Horizontal") * (speed) * (Time.deltaTime);
-        float moveZ = Input.GetAxis("Vertical") * (speed) * (Time.deltaTime);
-        transform.Translate(0, 0, moveZ);
-        //Debug.Log(moveZ);
-        transform.Translate(moveX, 0, 0);
-    }
-
-    void Movement()
-    {
-        
     }
 
     void RabbitMove()
@@ -116,9 +99,7 @@ public class Rabbit : MonoBehaviour {
 
         rb.AddForce(new Vector3(0, -gravity * rb.mass, 0));
     }
-
-    //needs a grouded check
-    //needs to jump
+    
     float CalculateJumpVerticalSpeed()
     {
         // From the jump height and gravity we deduce the upwards speed 
