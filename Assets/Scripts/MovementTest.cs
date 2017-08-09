@@ -4,7 +4,7 @@ using System.Collections;
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
 
-public class Movement : MonoBehaviour
+public class MovementTest : MonoBehaviour
 {
 
     public float speed = 10.0f;

@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class Rabbit : MonoBehaviour {
 
+    //the RigidBody of the character
+    Rigidbody rb;
+
     //The time the player gets to flick
     public float flickTime;
     //Where the timer starts
@@ -18,7 +21,7 @@ public class Rabbit : MonoBehaviour {
     //The time taken to complete the flick
     public float timeTaken;
     public bool moveMode = false;
-    //A delay variable for the jump
+    //A delay variable for the jump if you want to use it
     public float jumpDelay = 1.5f;
     bool flickBegin = false;
     public bool grounded = false;
@@ -26,11 +29,14 @@ public class Rabbit : MonoBehaviour {
     float gravity = 100.0f;
     //How high the object can jump
     float jumpHeight = 2.0f;
-    Rigidbody rb;
     public LayerMask groundLayer;
     public Collider playerCollider;
 
-	// Use this for initialization
+    //This is for the rotation of the character
+    public float speed;
+
+
+    // Use this for initialization
     void Awake()
 
     { 
@@ -47,12 +53,13 @@ public class Rabbit : MonoBehaviour {
 	void FixedUpdate ()
     {
         RabbitMove();
+        Rotate();
     }
 
     void RabbitMove()
     {
         //Gets where the stick is on the z Axis
-        float valueZ = Input.GetAxis("Vertical2");
+        float valueZ = Input.GetAxis("Vertical");
 
         if (!moveMode)
         {
@@ -125,7 +132,13 @@ public class Rabbit : MonoBehaviour {
         }
     }
 
-    
+    void Rotate()
+    {
+        //TODO This can be remapped to your liking (My controllers isn't working so I'm not sure if this even works)
+        float rotationSpeed = (Input.GetAxis("Horizontal2") * speed);
+        //for some reason "up" works instead of "right"
+        transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime);
+    }
 
 }
 
