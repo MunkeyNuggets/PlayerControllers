@@ -41,6 +41,7 @@ public class Snake : MonoBehaviour
     void Update()
     {
         SnakeMove();
+        Rotate();
     }
 
     void SnakeMove()
@@ -87,5 +88,13 @@ public class Snake : MonoBehaviour
         {
             snakeSpeed = snakeSpeedCap;
         }
+    }
+
+    void Rotate()
+    {
+        //TODO This can be remapped to your liking (My controllers isn't working so I'm not sure if this even works)
+        float rotationSpeed = Input.GetAxis("Horizontal2");
+        //for some reason "up" works instead of "right"
+        transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime);
     }
 }
